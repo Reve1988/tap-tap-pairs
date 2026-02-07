@@ -4,11 +4,13 @@ import type { GameStatus } from '../types'
 const props = defineProps<{
   status: GameStatus
   stage: number
+  shuffles: number
 }>()
 
 const emit = defineEmits<{
   'next-stage': []
   'restart': []
+  'shuffle-modal': []
 }>()
 </script>
 
@@ -44,6 +46,26 @@ const emit = defineEmits<{
           <button class="modal-btn danger" @click="emit('restart')">
             처음부터 다시하기
           </button>
+        </template>
+
+        <!-- No Matches -->
+        <template v-if="status === 'no-matches'">
+          <template v-if="shuffles > 0">
+            <div class="modal-icon">🔀</div>
+            <h2 class="modal-title">매치 불가!</h2>
+            <p class="modal-desc">가능한 매치가 없습니다. 셔플하시겠습니까?</p>
+            <button class="modal-btn primary" @click="emit('shuffle-modal')">
+              🔀 셔플하기 ({{ shuffles }}회 남음)
+            </button>
+          </template>
+          <template v-else>
+            <div class="modal-icon">😢</div>
+            <h2 class="modal-title">매치 실패!</h2>
+            <p class="modal-desc">가능한 매치가 없고 셔플 횟수도 소진되었습니다.</p>
+            <button class="modal-btn danger" @click="emit('restart')">
+              처음부터 다시하기
+            </button>
+          </template>
         </template>
       </div>
     </div>

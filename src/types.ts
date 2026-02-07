@@ -19,4 +19,4 @@ export interface StageConfig {
     layout: boolean[][]
 }
 
-export type GameStatus = 'ready' | 'playing' | 'stage-clear' | 'game-clear' | 'game-over'
+export type GameStatus = 'ready' | 'playing' | 'stage-clear' | 'game-clear' | 'game-over' | 'no-matches'

@@ -24,6 +24,7 @@ const {
   nextStage,
   restartGame,
   devSkipStage,
+  shuffleFromModal,
   selectCard,
   useHint,
   useShuffle,
@@ -78,11 +79,13 @@ const appVersion = __APP_VERSION__
       </main>
 
       <GameModal
-        v-if="gameStatus === 'stage-clear' || gameStatus === 'game-clear' || gameStatus === 'game-over'"
+        v-if="gameStatus === 'stage-clear' || gameStatus === 'game-clear' || gameStatus === 'game-over' || gameStatus === 'no-matches'"
         :status="gameStatus"
         :stage="currentStageNumber"
+        :shuffles="shuffles"
         @next-stage="nextStage"
         @restart="restartGame"
+        @shuffle-modal="shuffleFromModal"
       />
     </template>
 

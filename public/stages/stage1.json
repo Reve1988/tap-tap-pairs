@@ -2,7 +2,7 @@
     "id": 1,
     "cols": 6,
     "rows": 4,
-    "timeLimit": 120,
+    "timeLimit": 30,
     "layout": [
         [
             true,

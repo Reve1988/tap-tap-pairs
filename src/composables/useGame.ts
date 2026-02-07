@@ -75,9 +75,15 @@ export function useGame() {
         gameStatus.value = 'game-over'
     }
 
-    function stageClear() {
+    async function stageClear() {
         stopTimer()
-        gameStatus.value = 'stage-clear'
+        // Pre-check if next stage exists
+        const next = await loadStage(currentStageNumber.value + 1)
+        if (next) {
+            gameStatus.value = 'stage-clear'
+        } else {
+            gameStatus.value = 'game-clear'
+        }
     }
 
     async function nextStage() {
@@ -156,18 +162,29 @@ export function useGame() {
         }, 400)
     }
 
-    // --- Ensure matches exist, auto-shuffle if not ---
+    // --- Check if any matches exist ---
     function ensureMatchExists() {
         if (!currentStage.value) return
         const stage = currentStage.value
-        let attempts = 0
-        while (attempts < 20) {
-            const match = findAnyMatch(cards.value, stage.rows, stage.cols)
-            if (match) return
-            shuffleRemaining(cards.value)
-            cards.value = [...cards.value]
-            attempts++
+        const match = findAnyMatch(cards.value, stage.rows, stage.cols)
+        if (!match) {
+            // No matches available — pause and notify
+            stopTimer()
+            gameStatus.value = 'no-matches'
         }
+    }
+
+    // --- Shuffle from no-matches modal ---
+    function shuffleFromModal() {
+        if (shuffles.value <= 0) return
+        shuffles.value--
+        selectedCards.value = []
+        hintedCards.value = []
+        shuffleRemaining(cards.value)
+        cards.value = [...cards.value]
+        gameStatus.value = 'playing'
+        startTimer()
+        ensureMatchExists()
     }
 
     // --- Hint ---
@@ -213,6 +230,7 @@ export function useGame() {
         nextStage,
         restartGame,
         devSkipStage,
+        shuffleFromModal,
         selectCard,
         useHint,
         useShuffle,
