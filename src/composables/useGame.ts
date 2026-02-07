@@ -1,11 +1,12 @@
 import { ref, computed, onUnmounted } from 'vue'
-import type { Card, Point, GameStatus } from '../types'
-import { stages } from '../stages'
+import type { Card, Point, StageConfig, GameStatus } from '../types'
+import { loadStage } from '../stages'
 import { generateCards, shuffleRemaining } from '../game/board'
 import { findPath, buildGrid, findAnyMatch } from '../game/pathfinding'
 
 export function useGame() {
-    const currentStageIndex = ref(0)
+    const currentStageNumber = ref(1)
+    const currentStage = ref<StageConfig | null>(null)
     const cards = ref<Card[]>([])
     const selectedCards = ref<Card[]>([])
     const matchPath = ref<Point[] | null>(null)
@@ -14,11 +15,11 @@ export function useGame() {
     const hints = ref(3)
     const shuffles = ref(3)
     const hintedCards = ref<number[]>([])
+    const removingCards = ref<number[]>([])
     const isProcessing = ref(false)
 
     let timerInterval: number | null = null
 
-    const currentStage = computed(() => stages[currentStageIndex.value]!)
     const remainingCards = computed(() => cards.value.filter(c => !c.removed))
 
     // --- Timer ---
@@ -42,15 +43,22 @@ export function useGame() {
     }
 
     // --- Game flow ---
-    function startGame() {
-        currentStageIndex.value = 0
+    async function startGame() {
+        currentStageNumber.value = 1
         hints.value = 3
         shuffles.value = 3
-        startStage()
+        await startStage()
     }
 
-    function startStage() {
-        const stage = currentStage.value
+    async function startStage() {
+        const stage = await loadStage(currentStageNumber.value)
+        if (!stage) {
+            // No more stages — game clear!
+            stopTimer()
+            gameStatus.value = 'game-clear'
+            return
+        }
+        currentStage.value = stage
         cards.value = generateCards(stage)
         selectedCards.value = []
         matchPath.value = null
@@ -59,7 +67,6 @@ export function useGame() {
         timeLeft.value = stage.timeLimit
         gameStatus.value = 'playing'
         startTimer()
-        // Ensure initial board has at least one match
         ensureMatchExists()
     }
 
@@ -70,28 +77,30 @@ export function useGame() {
 
     function stageClear() {
         stopTimer()
-        if (currentStageIndex.value >= stages.length - 1) {
-            gameStatus.value = 'game-clear'
-        } else {
-            gameStatus.value = 'stage-clear'
-        }
+        gameStatus.value = 'stage-clear'
     }
 
-    function nextStage() {
-        currentStageIndex.value++
+    async function nextStage() {
+        currentStageNumber.value++
         hints.value = Math.min(hints.value + 1, 3)
         shuffles.value = Math.min(shuffles.value + 1, 3)
-        startStage()
+        await startStage()
     }
 
     function restartGame() {
         startGame()
     }
 
+    function devSkipStage() {
+        if (gameStatus.value !== 'playing') return
+        stageClear()
+    }
+
     // --- Card selection ---
     function selectCard(card: Card) {
         if (gameStatus.value !== 'playing' || isProcessing.value) return
-        if (card.removed) return
+        if (card.removed || removingCards.value.includes(card.id)) return
+        if (!currentStage.value) return
 
         hintedCards.value = []
 
@@ -116,17 +125,18 @@ export function useGame() {
             const path = findPath(grid, first, card, stage.rows, stage.cols)
 
             if (path) {
-                // Match found!
-                isProcessing.value = true
+                // Match found — animate out, allow next clicks immediately
                 matchPath.value = path
                 timeLeft.value += 1
+                removingCards.value = [first.id, card.id]
+                selectedCards.value = []
 
+                const f = first, c = card
                 setTimeout(() => {
-                    first.removed = true
-                    card.removed = true
+                    f.removed = true
+                    c.removed = true
+                    removingCards.value = []
                     matchPath.value = null
-                    selectedCards.value = []
-                    isProcessing.value = false
 
                     if (remainingCards.value.length === 0) {
                         stageClear()
@@ -148,13 +158,13 @@ export function useGame() {
 
     // --- Ensure matches exist, auto-shuffle if not ---
     function ensureMatchExists() {
+        if (!currentStage.value) return
         const stage = currentStage.value
         let attempts = 0
         while (attempts < 20) {
             const match = findAnyMatch(cards.value, stage.rows, stage.cols)
             if (match) return
             shuffleRemaining(cards.value)
-            // Force reactivity
             cards.value = [...cards.value]
             attempts++
         }
@@ -163,8 +173,8 @@ export function useGame() {
     // --- Hint ---
     function useHint() {
         if (hints.value <= 0 || gameStatus.value !== 'playing' || isProcessing.value) return
-        const stage = currentStage.value
-        const match = findAnyMatch(cards.value, stage.rows, stage.cols)
+        if (!currentStage.value) return
+        const match = findAnyMatch(cards.value, currentStage.value.rows, currentStage.value.cols)
         if (match) {
             hints.value--
             hintedCards.value = [match.card1.id, match.card2.id]
@@ -174,6 +184,7 @@ export function useGame() {
     // --- Shuffle ---
     function useShuffle() {
         if (shuffles.value <= 0 || gameStatus.value !== 'playing' || isProcessing.value) return
+        if (!currentStage.value) return
         shuffles.value--
         selectedCards.value = []
         hintedCards.value = []
@@ -187,7 +198,7 @@ export function useGame() {
     return {
         // State
         currentStage,
-        currentStageIndex,
+        currentStageNumber,
         cards,
         selectedCards,
         matchPath,
@@ -196,10 +207,12 @@ export function useGame() {
         hints,
         shuffles,
         hintedCards,
+        removingCards,
         // Actions
         startGame,
         nextStage,
         restartGame,
+        devSkipStage,
         selectCard,
         useHint,
         useShuffle,

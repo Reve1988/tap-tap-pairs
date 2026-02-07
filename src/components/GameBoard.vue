@@ -8,6 +8,7 @@ const props = defineProps<{
   cards: Card[]
   selectedCards: Card[]
   hintedCards: number[]
+  removingCards: number[]
   matchPath: Point[] | null
 }>()
 
@@ -21,6 +22,10 @@ const GAP = 6
 
 function getCard(row: number, col: number): Card | undefined {
   return props.cards.find(c => c.row === row && c.col === col && !c.removed)
+}
+
+function isRemoving(card: Card): boolean {
+  return props.removingCards.includes(card.id)
 }
 
 function isSelected(card: Card): boolean {
@@ -61,6 +66,7 @@ function isActiveCell(row: number, col: number): boolean {
             :card="getCard(r - 1, c - 1)!"
             :selected="isSelected(getCard(r - 1, c - 1)!)"
             :hinted="isHinted(getCard(r - 1, c - 1)!)"
+            :removing="isRemoving(getCard(r - 1, c - 1)!)"
             @click="emit('card-click', getCard(r - 1, c - 1)!)"
           />
         </div>

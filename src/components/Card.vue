@@ -5,6 +5,7 @@ const props = defineProps<{
   card: Card
   selected: boolean
   hinted: boolean
+  removing: boolean
 }>()
 
 const emit = defineEmits<{
@@ -18,6 +19,7 @@ const emit = defineEmits<{
     :class="{
       selected: selected,
       hinted: hinted,
+      removing: removing,
     }"
     @click="emit('click', card)"
   >
@@ -73,5 +75,15 @@ const emit = defineEmits<{
 .card-emoji {
   font-size: 1.8rem;
   line-height: 1;
+}
+
+.card.removing {
+  animation: card-fade-out 500ms ease forwards;
+  pointer-events: none;
+}
+
+@keyframes card-fade-out {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.6); }
 }
 </style>
