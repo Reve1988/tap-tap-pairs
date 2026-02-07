@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Clock, Lightbulb, Shuffle, RotateCcw } from 'lucide-vue-next'
 defineProps<{
   stage: number
   timeLeft: number
@@ -27,20 +28,20 @@ function formatTime(seconds: number): string {
 
     <div class="hud-center">
       <div class="timer" :class="{ warning: timeLeft <= 10 }">
-        <span class="timer-icon">⏱️</span>
+        <Clock :size="16" class="timer-icon" />
         <span class="timer-text">{{ formatTime(timeLeft) }}</span>
       </div>
     </div>
 
     <div class="hud-right">
       <button class="hud-btn" :disabled="hints <= 0" @click="emit('hint')">
-        💡 <span class="btn-count">{{ hints }}</span>
+        <Lightbulb :size="16" /> <span class="btn-count">{{ hints }}</span>
       </button>
       <button class="hud-btn" :disabled="shuffles <= 0" @click="emit('shuffle')">
-        🔀 <span class="btn-count">{{ shuffles }}</span>
+        <Shuffle :size="16" /> <span class="btn-count">{{ shuffles }}</span>
       </button>
       <button class="hud-btn restart-btn" @click="emit('restart')">
-        🔄 처음부터
+        <RotateCcw :size="16" /> 처음부터
       </button>
     </div>
   </div>
@@ -56,7 +57,7 @@ function formatTime(seconds: number): string {
   padding: var(--spacing-sm) var(--spacing-md);
   background: var(--color-surface);
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--card-border);
   box-shadow: var(--shadow-sm);
 }
 
@@ -105,7 +106,7 @@ function formatTime(seconds: number): string {
   align-items: center;
   gap: 4px;
   padding: 6px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
   border-radius: var(--radius-sm);
   background: var(--color-surface-light);
   color: var(--color-text);
@@ -115,8 +116,8 @@ function formatTime(seconds: number): string {
 }
 
 .hud-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--color-surface-light);
+  border-color: var(--card-border-hover);
 }
 
 .hud-btn:disabled {

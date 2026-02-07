@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { ArrowLeft, Download } from 'lucide-vue-next'
 
 const emit = defineEmits<{
   back: []
@@ -112,7 +113,7 @@ function downloadJSON() {
 <template>
   <div class="editor" @mouseup="onMouseUp" @mouseleave="onMouseUp">
     <header class="editor-header">
-      <button class="back-btn" @click="emit('back')">← 게임으로 돌아가기</button>
+      <button class="back-btn" @click="emit('back')"><ArrowLeft :size="14" /> 게임으로 돌아가기</button>
       <h2>스테이지 생성자</h2>
     </header>
 
@@ -147,7 +148,7 @@ function downloadJSON() {
           :disabled="!isValid"
           @click="downloadJSON"
         >
-          💾 JSON 다운로드
+          <Download :size="16" /> JSON 다운로드
         </button>
       </div>
 
@@ -199,7 +200,7 @@ function downloadJSON() {
 
 .back-btn {
   padding: 6px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
   color: var(--color-text-muted);
@@ -209,7 +210,7 @@ function downloadJSON() {
 }
 
 .back-btn:hover {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: var(--card-border-hover);
   color: var(--color-text);
 }
 
@@ -241,7 +242,7 @@ function downloadJSON() {
 
 .control-group input {
   padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
   color: var(--color-text);
@@ -281,7 +282,7 @@ function downloadJSON() {
 .ctrl-btn {
   flex: 1;
   padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
   border-radius: var(--radius-sm);
   background: var(--color-surface-light);
   color: var(--color-text);
@@ -291,7 +292,7 @@ function downloadJSON() {
 }
 
 .ctrl-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-surface-light);
 }
 
 .download-btn {
@@ -336,15 +337,15 @@ function downloadJSON() {
 
 .grid-cell {
   aspect-ratio: 1;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--color-surface-light);
+  border: 1px solid var(--card-border);
   border-radius: 2px;
   cursor: pointer;
   transition: background var(--transition-fast);
 }
 
 .grid-cell:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--color-surface);
 }
 
 .grid-cell.active {

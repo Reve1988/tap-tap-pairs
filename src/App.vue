@@ -6,6 +6,7 @@ import GameBoard from './components/GameBoard.vue'
 import GameHUD from './components/GameHUD.vue'
 import GameModal from './components/GameModal.vue'
 import StageEditor from './components/StageEditor.vue'
+import { Sun, Moon, SkipForward, Settings } from 'lucide-vue-next'
 
 const { currentTheme, toggleTheme } = useTheme()
 
@@ -42,7 +43,8 @@ const appVersion = __APP_VERSION__
 <template>
   <!-- Theme Toggle (floating) -->
   <button class="theme-float-btn" @click="toggleTheme" :title="currentTheme === 'dark' ? '라이트 모드' : '다크 모드'">
-    {{ currentTheme === 'dark' ? '☀️' : '🌙' }}
+    <Sun v-if="currentTheme === 'dark'" :size="18" />
+    <Moon v-else :size="18" />
   </button>
 
   <!-- Stage Editor (dev only) -->
@@ -100,10 +102,10 @@ const appVersion = __APP_VERSION__
     <!-- Dev-only buttons -->
     <div v-if="isDev" class="dev-buttons">
       <button class="dev-btn" @click="devSkipStage" title="스테이지 넘기기 (DEV)">
-        ⏭️
+        <SkipForward :size="18" />
       </button>
       <button class="dev-btn" @click="currentPage = 'editor'" title="스테이지 생성자 (DEV)">
-        🛠️
+        <Settings :size="18" />
       </button>
     </div>
 
@@ -131,6 +133,7 @@ const appVersion = __APP_VERSION__
   right: 12px;
   z-index: 50;
   background: var(--color-surface);
+  color: var(--color-text);
   border: 1px solid var(--card-border);
   border-radius: 50%;
   width: 36px;
@@ -217,9 +220,10 @@ const appVersion = __APP_VERSION__
 .dev-btn {
   width: 40px;
   height: 40px;
-  border: 1px solid rgba(255, 200, 0, 0.3);
+  border: 1px solid var(--color-warning);
   border-radius: 50%;
   background: var(--color-surface);
+  color: var(--color-text);
   font-size: 1.1rem;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -230,7 +234,7 @@ const appVersion = __APP_VERSION__
 
 .dev-btn:hover {
   background: var(--color-surface-light);
-  border-color: rgba(255, 200, 0, 0.6);
+  border-color: var(--color-warning);
   transform: scale(1.1);
 }
 
@@ -239,7 +243,7 @@ const appVersion = __APP_VERSION__
   bottom: 8px;
   right: 12px;
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.2);
+  color: var(--color-text-muted);
   letter-spacing: 0.5px;
 }
 </style>

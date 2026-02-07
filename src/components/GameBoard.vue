@@ -104,7 +104,7 @@ function isActiveCell(row: number, col: number): boolean {
 }
 
 .cell.empty {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--color-surface);
   border-radius: var(--radius-md);
 }
 </style>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { GameStatus } from '../types'
+import { CircleCheck, Trophy, Timer, Shuffle, CircleX } from 'lucide-vue-next'
 
 const props = defineProps<{
   status: GameStatus
@@ -20,7 +21,7 @@ const emit = defineEmits<{
       <div class="modal" :class="status">
         <!-- Stage Clear -->
         <template v-if="status === 'stage-clear'">
-          <div class="modal-icon">🎉</div>
+          <div class="modal-icon"><CircleCheck :size="56" /></div>
           <h2 class="modal-title">Stage {{ stage }} Clear!</h2>
           <p class="modal-desc">잘하셨습니다! 다음 스테이지로 이동합니다.</p>
           <button class="modal-btn primary" @click="emit('next-stage')">
@@ -30,7 +31,7 @@ const emit = defineEmits<{
 
         <!-- Game Clear (All stages done) -->
         <template v-if="status === 'game-clear'">
-          <div class="modal-icon">🏆</div>
+          <div class="modal-icon"><Trophy :size="56" /></div>
           <h2 class="modal-title">축하합니다!</h2>
           <p class="modal-desc">모든 스테이지를 클리어했습니다!</p>
           <button class="modal-btn primary" @click="emit('restart')">
@@ -40,7 +41,7 @@ const emit = defineEmits<{
 
         <!-- Game Over -->
         <template v-if="status === 'game-over'">
-          <div class="modal-icon">⏰</div>
+          <div class="modal-icon"><Timer :size="56" /></div>
           <h2 class="modal-title">시간 초과!</h2>
           <p class="modal-desc">제한 시간이 초과되었습니다. 다시 도전하세요!</p>
           <button class="modal-btn danger" @click="emit('restart')">
@@ -51,15 +52,15 @@ const emit = defineEmits<{
         <!-- No Matches -->
         <template v-if="status === 'no-matches'">
           <template v-if="shuffles > 0">
-            <div class="modal-icon">🔀</div>
+            <div class="modal-icon"><Shuffle :size="56" /></div>
             <h2 class="modal-title">매치 불가!</h2>
             <p class="modal-desc">가능한 매치가 없습니다. 셔플하시겠습니까?</p>
             <button class="modal-btn primary" @click="emit('shuffle-modal')">
-              🔀 셔플하기 ({{ shuffles }}회 남음)
+              <Shuffle :size="16" /> 셔플하기 ({{ shuffles }}회 남음)
             </button>
           </template>
           <template v-else>
-            <div class="modal-icon">😢</div>
+            <div class="modal-icon"><CircleX :size="56" /></div>
             <h2 class="modal-title">매치 실패!</h2>
             <p class="modal-desc">가능한 매치가 없고 셔플 횟수도 소진되었습니다.</p>
             <button class="modal-btn danger" @click="emit('restart')">
@@ -109,8 +110,8 @@ const emit = defineEmits<{
 }
 
 .modal-icon {
-  font-size: 3.5rem;
   line-height: 1;
+  color: var(--color-accent);
 }
 
 .modal-title {
