@@ -148,3 +148,27 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--scrollbar-thumb-hover);
 }
+
+/* ===========================
+   Touch Optimization
+   =========================== */
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+.card,
+a {
+  touch-action: manipulation;
+}
+
+/* ===========================
+   Mobile Responsive
+   =========================== */
+
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+}

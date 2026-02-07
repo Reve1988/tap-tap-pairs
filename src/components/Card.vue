@@ -86,4 +86,14 @@ const emit = defineEmits<{
   0% { opacity: 1; transform: scale(1); }
   100% { opacity: 0; transform: scale(0.6); }
 }
+
+@media (max-width: 480px) {
+  .card-emoji {
+    font-size: 1.3rem;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}
 </style>

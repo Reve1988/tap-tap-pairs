@@ -6,7 +6,7 @@ import GameBoard from './components/GameBoard.vue'
 import GameHUD from './components/GameHUD.vue'
 import GameModal from './components/GameModal.vue'
 import StageEditor from './components/StageEditor.vue'
-import { Sun, Moon, SkipBack, SkipForward, Settings } from 'lucide-vue-next'
+import { Sun, Moon, SkipBack, SkipForward, Settings, Lightbulb, Shuffle } from 'lucide-vue-next'
 
 const { currentTheme, toggleTheme } = useTheme()
 
@@ -39,6 +39,24 @@ const isDev = import.meta.env.DEV
 
 declare const __APP_VERSION__: string
 const appVersion = __APP_VERSION__
+
+// Confirm modal
+const confirmAction = ref<'hint' | 'shuffle' | null>(null)
+
+function requestHint() {
+  confirmAction.value = 'hint'
+}
+function requestShuffle() {
+  confirmAction.value = 'shuffle'
+}
+function confirmUse() {
+  if (confirmAction.value === 'hint') useHint()
+  else if (confirmAction.value === 'shuffle') useShuffle()
+  confirmAction.value = null
+}
+function cancelConfirm() {
+  confirmAction.value = null
+}
 </script>
 
 <template>
@@ -71,8 +89,8 @@ const appVersion = __APP_VERSION__
         :time-left="timeLeft"
         :hints="hints"
         :shuffles="shuffles"
-        @hint="useHint"
-        @shuffle="useShuffle"
+        @hint="requestHint"
+        @shuffle="requestShuffle"
         @restart="restartGame"
       />
 
@@ -99,6 +117,29 @@ const appVersion = __APP_VERSION__
         @shuffle-modal="shuffleFromModal"
       />
     </template>
+
+    <!-- Confirm Modal -->
+    <Teleport to="body">
+      <div v-if="confirmAction" class="confirm-overlay" @click.self="cancelConfirm">
+        <div class="confirm-modal">
+          <div class="confirm-icon">
+            <Lightbulb v-if="confirmAction === 'hint'" :size="40" />
+            <Shuffle v-else :size="40" />
+          </div>
+          <p class="confirm-text">
+            {{ confirmAction === 'hint' ? '힌트' : '셔플' }}를 사용하시겠습니까?
+          </p>
+          <p class="confirm-remaining">
+            남은 횟수: {{ confirmAction === 'hint' ? hints : shuffles }}회
+          </p>
+          <div class="confirm-buttons">
+            <button class="confirm-btn cancel" @click="cancelConfirm">취소</button>
+            <button class="confirm-btn ok" @click="confirmUse">사용</button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
 
     <!-- Dev-only buttons -->
     <div v-if="isDev" class="dev-buttons">
@@ -249,5 +290,154 @@ const appVersion = __APP_VERSION__
   font-size: 1rem;
   color: var(--color-text-muted);
   letter-spacing: 0.5px;
+}
+
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--modal-backdrop);
+  backdrop-filter: blur(6px);
+  z-index: 200;
+  animation: fade-in 0.2s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.confirm-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: 32px 40px;
+  background: var(--color-surface);
+  border: 1px solid var(--modal-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  animation: modal-pop 0.25s ease;
+}
+
+@keyframes modal-pop {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.confirm-icon {
+  color: var(--color-accent);
+}
+
+.confirm-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.confirm-remaining {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.confirm-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.confirm-btn {
+  padding: 8px 28px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.confirm-btn.cancel {
+  background: var(--color-surface-light);
+  color: var(--color-text-muted);
+}
+
+.confirm-btn.cancel:hover {
+  border-color: var(--card-border-hover);
+  color: var(--color-text);
+}
+
+.confirm-btn.ok {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-alt));
+  color: white;
+  border: none;
+}
+
+.confirm-btn.ok:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 480px) {
+  #game-container {
+    padding: 12px 8px;
+    gap: var(--spacing-md);
+  }
+
+  .game-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .game-header .subtitle {
+    font-size: 0.7rem;
+  }
+
+  .start-btn {
+    padding: 12px 40px;
+    font-size: 1rem;
+  }
+
+  .theme-float-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    top: 8px;
+    right: 8px;
+  }
+
+  .confirm-modal {
+    padding: 24px 28px;
+    margin: 0 16px;
+  }
+
+  .confirm-text {
+    font-size: 1rem;
+  }
+
+  .confirm-btn {
+    padding: 8px 22px;
+    font-size: 0.9rem;
+  }
+
+  .dev-buttons {
+    bottom: 12px;
+    right: 8px;
+  }
+
+  .dev-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+
+  .version-badge {
+    font-size: 0.8rem;
+    bottom: 4px;
+    right: 8px;
+  }
 }
 </style>

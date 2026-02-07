@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { Card, Point, StageConfig } from '../types'
 import CardComponent from './Card.vue'
 import PathOverlay from './PathOverlay.vue'
@@ -16,9 +17,17 @@ const emit = defineEmits<{
   'card-click': [card: Card]
 }>()
 
-const CELL_WIDTH = 70
-const CELL_HEIGHT = 88
 const GAP = 6
+
+const cellSize = computed(() => {
+  const maxW = Math.min(window.innerWidth - 32, 600)
+  const maxH = window.innerHeight - 200
+  const cellW = Math.floor((maxW - (props.stage.cols - 1) * GAP) / props.stage.cols)
+  const cellH = Math.floor((maxH - (props.stage.rows - 1) * GAP) / props.stage.rows)
+  const w = Math.min(cellW, 70)
+  const h = Math.min(Math.floor(w * 1.26), cellH, 88)
+  return { width: w, height: h }
+})
 
 function getCard(row: number, col: number): Card | undefined {
   return props.cards.find(c => c.row === row && c.col === col && !c.removed)
@@ -46,8 +55,8 @@ function isActiveCell(row: number, col: number): boolean {
     <div
       class="board-grid"
       :style="{
-        gridTemplateColumns: `repeat(${stage.cols}, ${CELL_WIDTH}px)`,
-        gridTemplateRows: `repeat(${stage.rows}, ${CELL_HEIGHT}px)`,
+        gridTemplateColumns: `repeat(${stage.cols}, ${cellSize.width}px)`,
+        gridTemplateRows: `repeat(${stage.rows}, ${cellSize.height}px)`,
         gap: `${GAP}px`
       }"
     >
@@ -78,8 +87,8 @@ function isActiveCell(row: number, col: number): boolean {
       :path="matchPath"
       :rows="stage.rows"
       :cols="stage.cols"
-      :cell-width="CELL_WIDTH"
-      :cell-height="CELL_HEIGHT"
+      :cell-width="cellSize.width"
+      :cell-height="cellSize.height"
       :gap="GAP"
     />
   </div>

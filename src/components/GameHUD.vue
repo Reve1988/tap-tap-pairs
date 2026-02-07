@@ -142,4 +142,31 @@ function formatTime(seconds: number): string {
   min-width: 16px;
   text-align: center;
 }
+
+@media (max-width: 480px) {
+  .hud {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    gap: var(--spacing-xs);
+  }
+
+  .stage-badge {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+  }
+
+  .timer {
+    font-size: 1rem;
+    gap: 4px;
+  }
+
+  .hud-btn {
+    padding: 5px 8px;
+    font-size: 0.8rem;
+    gap: 2px;
+  }
+
+  .restart-btn {
+    font-size: 0.7rem;
+  }
+}
 </style>
