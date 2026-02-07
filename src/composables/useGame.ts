@@ -102,6 +102,12 @@ export function useGame() {
         stageClear()
     }
 
+    async function devPrevStage() {
+        if (currentStageNumber.value <= 1) return
+        currentStageNumber.value--
+        await startStage()
+    }
+
     // --- Card selection ---
     function selectCard(card: Card) {
         if (gameStatus.value !== 'playing' || isProcessing.value) return
@@ -230,6 +236,7 @@ export function useGame() {
         nextStage,
         restartGame,
         devSkipStage,
+        devPrevStage,
         shuffleFromModal,
         selectCard,
         useHint,

@@ -6,7 +6,7 @@ import GameBoard from './components/GameBoard.vue'
 import GameHUD from './components/GameHUD.vue'
 import GameModal from './components/GameModal.vue'
 import StageEditor from './components/StageEditor.vue'
-import { Sun, Moon, SkipForward, Settings } from 'lucide-vue-next'
+import { Sun, Moon, SkipBack, SkipForward, Settings } from 'lucide-vue-next'
 
 const { currentTheme, toggleTheme } = useTheme()
 
@@ -28,6 +28,7 @@ const {
   nextStage,
   restartGame,
   devSkipStage,
+  devPrevStage,
   shuffleFromModal,
   selectCard,
   useHint,
@@ -101,7 +102,10 @@ const appVersion = __APP_VERSION__
 
     <!-- Dev-only buttons -->
     <div v-if="isDev" class="dev-buttons">
-      <button class="dev-btn" @click="devSkipStage" title="스테이지 넘기기 (DEV)">
+      <button class="dev-btn" @click="devPrevStage" title="이전 스테이지 (DEV)">
+        <SkipBack :size="18" />
+      </button>
+      <button class="dev-btn" @click="devSkipStage" title="다음 스테이지 (DEV)">
         <SkipForward :size="18" />
       </button>
       <button class="dev-btn" @click="currentPage = 'editor'" title="스테이지 생성자 (DEV)">
