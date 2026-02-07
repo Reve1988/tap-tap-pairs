@@ -46,6 +46,7 @@ const {
         :shuffles="shuffles"
         @hint="useHint"
         @shuffle="useShuffle"
+        @restart="restartGame"
       />
 
       <main class="game-board-area">

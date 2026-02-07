@@ -9,6 +9,7 @@ defineProps<{
 const emit = defineEmits<{
   hint: []
   shuffle: []
+  restart: []
 }>()
 
 function formatTime(seconds: number): string {
@@ -37,6 +38,9 @@ function formatTime(seconds: number): string {
       </button>
       <button class="hud-btn" :disabled="shuffles <= 0" @click="emit('shuffle')">
         🔀 <span class="btn-count">{{ shuffles }}</span>
+      </button>
+      <button class="hud-btn restart-btn" @click="emit('restart')">
+        🔄 처음부터
       </button>
     </div>
   </div>
@@ -118,6 +122,17 @@ function formatTime(seconds: number): string {
 .hud-btn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
+}
+
+.restart-btn {
+  margin-left: 4px;
+  border-color: rgba(248, 113, 113, 0.25);
+  font-size: 0.8rem;
+}
+
+.restart-btn:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
 }
 
 .btn-count {

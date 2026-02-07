@@ -18,7 +18,7 @@ export function useGame() {
 
     let timerInterval: number | null = null
 
-    const currentStage = computed(() => stages[currentStageIndex.value])
+    const currentStage = computed(() => stages[currentStageIndex.value]!)
     const remainingCards = computed(() => cards.value.filter(c => !c.removed))
 
     // --- Timer ---
@@ -107,7 +107,7 @@ export function useGame() {
         }
 
         // Second card selected
-        const first = selectedCards.value[0]
+        const first = selectedCards.value[0]!
         selectedCards.value = [first, card]
 
         if (first.emoji === card.emoji) {
