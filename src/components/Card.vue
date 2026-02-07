@@ -36,7 +36,7 @@ const emit = defineEmits<{
   height: 100%;
   background: var(--color-surface-light);
   border-radius: var(--radius-md);
-  border: 2px solid rgba(255, 255, 255, 0.08);
+  border: 2px solid var(--card-border);
   cursor: pointer;
   transition: transform var(--transition-fast),
               border-color var(--transition-fast),
@@ -46,7 +46,7 @@ const emit = defineEmits<{
 
 .card:hover {
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: var(--card-border-hover);
   box-shadow: var(--shadow-md);
 }
 

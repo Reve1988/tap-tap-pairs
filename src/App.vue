@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useGame } from './composables/useGame'
+import { useTheme } from './composables/useTheme'
 import GameBoard from './components/GameBoard.vue'
 import GameHUD from './components/GameHUD.vue'
 import GameModal from './components/GameModal.vue'
 import StageEditor from './components/StageEditor.vue'
+
+const { currentTheme, toggleTheme } = useTheme()
 
 const currentPage = ref<'game' | 'editor'>('game')
 
@@ -37,6 +40,11 @@ const appVersion = __APP_VERSION__
 </script>
 
 <template>
+  <!-- Theme Toggle (floating) -->
+  <button class="theme-float-btn" @click="toggleTheme" :title="currentTheme === 'dark' ? '라이트 모드' : '다크 모드'">
+    {{ currentTheme === 'dark' ? '☀️' : '🌙' }}
+  </button>
+
   <!-- Stage Editor (dev only) -->
   <StageEditor v-if="isDev && currentPage === 'editor'" @back="currentPage = 'game'" />
 
@@ -115,6 +123,31 @@ const appVersion = __APP_VERSION__
 
 .game-header {
   text-align: center;
+}
+
+.theme-float-btn {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 50;
+  background: var(--color-surface);
+  border: 1px solid var(--card-border);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-float-btn:hover {
+  border-color: var(--card-border-hover);
+  transform: scale(1.15);
+  box-shadow: var(--shadow-md);
 }
 
 .game-header h1 {

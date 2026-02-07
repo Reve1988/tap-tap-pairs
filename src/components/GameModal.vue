@@ -79,7 +79,7 @@ const emit = defineEmits<{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.65);
+  background: var(--modal-backdrop);
   backdrop-filter: blur(6px);
   z-index: 100;
   animation: fade-in 0.25s ease;
@@ -96,7 +96,7 @@ const emit = defineEmits<{
   gap: var(--spacing-md);
   padding: var(--spacing-xl) 40px;
   background: var(--color-surface);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--modal-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   text-align: center;
