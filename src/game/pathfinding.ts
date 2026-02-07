@@ -12,8 +12,8 @@ function isCellBlocked(
     cols: number
 ): boolean {
     if (row < 0 || row >= rows || col < 0 || col >= cols) return false
-    const card = grid[row][col]
-    return card !== null && !card.removed
+    const card = grid[row]![col]
+    return card !== null && !card!.removed
 }
 
 /**
@@ -52,7 +52,7 @@ export function buildGrid(cards: Card[], rows: number, cols: number): (Card | nu
     const grid: (Card | null)[][] = Array.from({ length: rows }, () => Array(cols).fill(null))
     for (const card of cards) {
         if (!card.removed) {
-            grid[card.row][card.col] = card
+            grid[card.row]![card.col] = card
         }
     }
     return grid
@@ -133,10 +133,10 @@ export function findAnyMatch(
 
     for (let i = 0; i < remaining.length; i++) {
         for (let j = i + 1; j < remaining.length; j++) {
-            if (remaining[i].emoji === remaining[j].emoji) {
-                const path = findPath(grid, remaining[i], remaining[j], rows, cols)
+            if (remaining[i]!.emoji === remaining[j]!.emoji) {
+                const path = findPath(grid, remaining[i]!, remaining[j]!, rows, cols)
                 if (path) {
-                    return { card1: remaining[i], card2: remaining[j], path }
+                    return { card1: remaining[i]!, card2: remaining[j]!, path }
                 }
             }
         }

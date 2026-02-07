@@ -63,7 +63,7 @@ function pathPoints(): string {
     />
     <!-- Endpoints -->
     <circle
-      v-for="(p, i) in [path[0], path[path.length - 1]]"
+      v-for="(p, i) in [path[0]!, path[path.length - 1]!]"
       :key="i"
       :cx="toSvgX(p.col)"
       :cy="toSvgY(p.row)"

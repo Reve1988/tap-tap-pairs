@@ -16,7 +16,7 @@ function shuffle<T>(arr: T[]): T[] {
     const result = [...arr]
     for (let i = result.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1))
-            ;[result[i], result[j]] = [result[j], result[i]]
+            ;[result[i], result[j]] = [result[j]!, result[i]!]
     }
     return result
 }
@@ -25,7 +25,7 @@ export function getActiveCells(stage: StageConfig): Point[] {
     const cells: Point[] = []
     for (let r = 0; r < stage.rows; r++) {
         for (let c = 0; c < stage.cols; c++) {
-            if (stage.layout[r][c]) {
+            if (stage.layout[r]![c]) {
                 cells.push({ row: r, col: c })
             }
         }
@@ -56,7 +56,7 @@ export function generateCards(stage: StageConfig): Card[] {
 
     return cells.map((pos, i) => ({
         id: i,
-        emoji: emojis[i],
+        emoji: emojis[i]!,
         row: pos.row,
         col: pos.col,
         removed: false
@@ -71,6 +71,6 @@ export function shuffleRemaining(cards: Card[]): void {
     let emojis = remaining.map(c => c.emoji)
     emojis = shuffle(emojis)
     remaining.forEach((card, i) => {
-        card.emoji = emojis[i]
+        card.emoji = emojis[i]!
     })
 }
