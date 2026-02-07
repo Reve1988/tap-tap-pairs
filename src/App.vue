@@ -22,6 +22,9 @@ const {
   useHint,
   useShuffle,
 } = useGame()
+
+declare const __APP_VERSION__: string
+const appVersion = __APP_VERSION__
 </script>
 
 <template>
@@ -68,6 +71,8 @@ const {
         @restart="restartGame"
       />
     </template>
+
+    <span class="version-badge">v{{ appVersion }}</span>
   </div>
 </template>
 
@@ -138,5 +143,14 @@ const {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.version-badge {
+  position: fixed;
+  bottom: 8px;
+  right: 12px;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.5px;
 }
 </style>
